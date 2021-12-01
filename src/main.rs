@@ -27,5 +27,5 @@ fn day11(input: &Vec<u64>) {
 }
 
 fn day12(input: &Vec<u64>) {
-    day11(&input.windows(3).map(|a| a[0] + a[1] + a[2]).collect());
+    println!("{}", input.windows(4).filter(|a| a[0] < a[3]).count());
 }
