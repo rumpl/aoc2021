@@ -23,22 +23,9 @@ fn day1() -> Result<(), Box<dyn Error>> {
 }
 
 fn day11(input: &Vec<u64>) {
-    let mut count = 0;
-    for i in 1..input.len() {
-        if input[i - 1] < input[i] {
-            count = count + 1;
-        }
-    }
-
-    println!("{}", count);
+    println!("{}", input.windows(2).filter(|w| w[0] < w[1]).count());
 }
 
 fn day12(input: &Vec<u64>) {
-    let mut sums: Vec<u64> = vec![];
-
-    for i in 0..input.len() - 2 {
-        sums.push(input[i] + input[i + 1] + input[i + 2]);
-    }
-
-    day11(&sums);
+    day11(&input.windows(3).map(|a| a[0] + a[1] + a[2]).collect());
 }
