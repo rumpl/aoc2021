@@ -1,31 +1,19 @@
 use std::{error::Error, fs};
 
-fn main() {
-    match day1() {
+mod day01;
+mod day02;
+
+fn main() -> Result<(), Box<dyn Error>> {
+    match day01::day01() {
         Ok(()) => {}
         Err(error) => eprintln!("{}", error),
     }
-}
 
-fn day1() -> Result<(), Box<dyn Error>> {
-    let contents = fs::read_to_string("./day1.txt")?;
-
-    let input: Vec<u64> = contents
-        .split('\n')
-        .filter(|i| i.len() != 0)
-        .map(|i| i.parse::<u64>().unwrap())
-        .collect();
-
-    day11(&input);
-    day12(&input);
+    let contents = fs::read_to_string("./inputs/day02.txt")?;
+    match day02::day02(contents) {
+        Ok(s) => println!("{}", s),
+        Err(error) => eprintln!("{}", error),
+    };
 
     Ok(())
-}
-
-fn day11(input: &Vec<u64>) {
-    println!("{}", input.windows(2).filter(|w| w[0] < w[1]).count());
-}
-
-fn day12(input: &Vec<u64>) {
-    println!("{}", input.windows(4).filter(|a| a[0] < a[3]).count());
 }
