@@ -7,23 +7,39 @@ enum Command {
 }
 
 #[derive(Debug, Clone)]
-struct CommandParseError;
+struct CommandParseError {
+    message: String,
+}
 
 impl FromStr for Command {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let parts: Vec<&str> = s.split(' ').collect();
 
-        match parts[0] {
-            "forward" => Ok(Command::Forward(parts[1].parse::<usize>().unwrap())),
-            "up" => Ok(Command::Up(parts[1].parse::<usize>().unwrap())),
-            "down" => Ok(Command::Down(parts[1].parse::<usize>().unwrap())),
-            _ => Err(CommandParseError),
+        if parts.len() != 2 {
+            return Err(CommandParseError {
+                message: "not enough parts".into(),
+            });
+        }
+
+        match parts[1].parse::<usize>() {
+            Ok(amount) => match parts[0] {
+                "forward" => Ok(Command::Forward(amount)),
+                "up" => Ok(Command::Up(amount)),
+                "down" => Ok(Command::Down(amount)),
+                _ => Err(CommandParseError {
+                    message: "unknown command".into(),
+                }),
+            },
+            Err(_) => Err(CommandParseError {
+                message: "unable to parse the amount".into(),
+            }),
         }
     }
 
     type Err = CommandParseError;
 }
 
+#[derive(Default)]
 struct Submarine {
     horizontal: usize,
     dept: usize,
@@ -33,14 +49,10 @@ struct Submarine {
 pub fn day021(input: &str) -> Result<usize, Box<dyn Error>> {
     let commands: Vec<Command> = input
         .lines()
-        .map(|line| line.parse::<Command>().unwrap())
+        .filter_map(|l| l.parse::<Command>().ok())
         .collect();
 
-    let mut submarine = Submarine {
-        horizontal: 0,
-        dept: 0,
-        aim: 0,
-    };
+    let mut submarine: Submarine = Default::default();
 
     for command in commands {
         match command {
@@ -56,14 +68,10 @@ pub fn day021(input: &str) -> Result<usize, Box<dyn Error>> {
 pub fn day022(input: &str) -> Result<usize, Box<dyn Error>> {
     let commands: Vec<Command> = input
         .lines()
-        .map(|line| line.parse::<Command>().unwrap())
+        .filter_map(|l| l.parse::<Command>().ok())
         .collect();
 
-    let mut submarine = Submarine {
-        horizontal: 0,
-        dept: 0,
-        aim: 0,
-    };
+    let mut submarine: Submarine = Default::default();
 
     for command in commands {
         match command {
