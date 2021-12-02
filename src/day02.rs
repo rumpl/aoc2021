@@ -27,25 +27,19 @@ impl FromStr for Command {
 struct Submarine {
     horizontal: usize,
     dept: usize,
+    aim: usize,
 }
 
-pub fn day02(input: String) -> Result<usize, Box<dyn Error>> {
-    let commands: Vec<Result<Command, CommandParseError>> =
-        input.lines().map(|line| line.parse::<Command>()).collect();
-
-    let cmds: Vec<&Command> = commands
-        .iter()
-        .filter(|c| !c.is_err())
-        .map(|a| a.as_ref().unwrap())
+pub fn day021(input: &str) -> Result<usize, Box<dyn Error>> {
+    let commands: Vec<Command> = input
+        .lines()
+        .map(|line| line.parse::<Command>().unwrap())
         .collect();
 
-    Ok(day021(cmds))
-}
-
-fn day021(commands: Vec<&Command>) -> usize {
     let mut submarine = Submarine {
         horizontal: 0,
         dept: 0,
+        aim: 0,
     };
 
     for command in commands {
@@ -56,7 +50,33 @@ fn day021(commands: Vec<&Command>) -> usize {
         }
     }
 
-    submarine.dept * submarine.horizontal
+    Ok(submarine.dept * submarine.horizontal)
+}
+
+pub fn day022(input: &str) -> Result<usize, Box<dyn Error>> {
+    let commands: Vec<Command> = input
+        .lines()
+        .map(|line| line.parse::<Command>().unwrap())
+        .collect();
+
+    let mut submarine = Submarine {
+        horizontal: 0,
+        dept: 0,
+        aim: 0,
+    };
+
+    for command in commands {
+        match command {
+            Command::Forward(d) => {
+                submarine.horizontal += d;
+                submarine.dept += submarine.aim * d;
+            }
+            Command::Up(d) => submarine.aim -= d,
+            Command::Down(d) => submarine.aim += d,
+        }
+    }
+
+    Ok(submarine.dept * submarine.horizontal)
 }
 
 #[cfg(test)]
@@ -64,18 +84,34 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
+    fn day021_test() {
         assert_eq!(
-            day02(String::from(
+            day021(
                 "forward 5
 down 5
 forward 8
 up 3
 down 8
 forward 2"
-            ))
+            )
             .unwrap(),
             150
+        );
+    }
+
+    #[test]
+    fn day022_test() {
+        assert_eq!(
+            day022(
+                "forward 5
+down 5
+forward 8
+up 3
+down 8
+forward 2"
+            )
+            .unwrap(),
+            900
         );
     }
 }

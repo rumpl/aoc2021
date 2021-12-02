@@ -10,8 +10,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     let contents = fs::read_to_string("./inputs/day02.txt")?;
-    match day02::day02(contents) {
-        Ok(s) => println!("{}", s),
+    match day02::day021(&contents) {
+        Ok(s) => println!("day 2, part 1: {}", s),
+        Err(error) => eprintln!("{}", error),
+    };
+    match day02::day022(&contents) {
+        Ok(s) => println!("day 2, part 2: {}", s),
         Err(error) => eprintln!("{}", error),
     };
 
