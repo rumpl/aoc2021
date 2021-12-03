@@ -15,10 +15,8 @@ macro_rules! day {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    match day01::day01() {
-        Ok(()) => {}
-        Err(error) => eprintln!("{}", error),
-    }
+    day!(day01, day11);
+    day!(day01, day12);
 
     day!(day02, day021);
     day!(day02, day022);

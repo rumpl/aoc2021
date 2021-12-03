@@ -46,11 +46,15 @@ struct Submarine {
     aim: usize,
 }
 
-pub fn day021(input: &str) -> Result<usize, Box<dyn Error>> {
-    let commands: Vec<Command> = input
+fn parse(input: &str) -> Vec<Command> {
+    input
         .lines()
         .filter_map(|l| l.parse::<Command>().ok())
-        .collect();
+        .collect()
+}
+
+pub fn day021(input: &str) -> Result<usize, Box<dyn Error>> {
+    let commands = parse(input);
 
     let mut submarine: Submarine = Default::default();
 
@@ -66,11 +70,7 @@ pub fn day021(input: &str) -> Result<usize, Box<dyn Error>> {
 }
 
 pub fn day022(input: &str) -> Result<usize, Box<dyn Error>> {
-    let commands: Vec<Command> = input
-        .lines()
-        .filter_map(|l| l.parse::<Command>().ok())
-        .collect();
-
+    let commands = parse(input);
     let mut submarine: Submarine = Default::default();
 
     for command in commands {
