@@ -33,7 +33,7 @@ pub fn day031(input: &str) -> Result<usize, Box<dyn Error>> {
     Ok(gama * epsilon)
 }
 
-fn count(lines: &Vec<&str>, i: usize) -> char {
+fn count(lines: &[&str], i: usize) -> char {
     let mut count_ones = 0;
 
     for l in lines {
@@ -45,7 +45,8 @@ fn count(lines: &Vec<&str>, i: usize) -> char {
     if 2 * count_ones >= lines.len() {
         return '1';
     }
-    return '0';
+
+    '0'
 }
 
 pub fn day032(input: &str) -> Result<usize, Box<dyn Error>> {

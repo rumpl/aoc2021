@@ -3,6 +3,7 @@ use std::{error::Error, fs};
 mod day01;
 mod day02;
 mod day03;
+mod day04;
 
 macro_rules! day {
     ($day:ident, $part:ident) => {
@@ -23,6 +24,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     day!(day03, day031);
     day!(day03, day032);
+
+    day!(day04, day041);
+    day!(day04, day042);
 
     Ok(())
 }
