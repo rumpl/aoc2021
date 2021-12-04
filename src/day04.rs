@@ -1,4 +1,4 @@
-use std::{error::Error, vec};
+use std::{error::Error, usize, vec};
 
 #[derive(Debug)]
 struct Number {
@@ -8,6 +8,7 @@ struct Number {
 
 #[derive(Debug)]
 struct Board {
+    done: bool,
     numbers: Vec<Number>,
     width: u32,
     height: u32,
@@ -22,7 +23,7 @@ impl Board {
         }
     }
 
-    fn is_winner(&self) -> bool {
+    fn bingo(&self) -> bool {
         let mut win = true;
         for i in 0..self.width {
             win = true;
@@ -61,24 +62,31 @@ impl Board {
 }
 
 #[derive(Debug)]
-struct Bingo {
+struct Game {
     boards: Vec<Board>,
 }
 
-impl Bingo {
+impl Game {
     fn new_number(&mut self, n: u32) {
         for board in self.boards.iter_mut() {
             board.new_number(n);
         }
     }
 
-    fn winner(&self) -> Option<&Board> {
-        for board in &self.boards {
-            if board.is_winner() {
-                return Some(board);
+    fn bingo(&mut self) -> Vec<&Board> {
+        let mut done: Vec<&Board> = vec![];
+        for board in self.boards.iter_mut() {
+            if board.done {
+                continue;
+            }
+
+            if board.bingo() {
+                board.done = true;
+                done.push(board);
             }
         }
-        None
+
+        done
     }
 }
 
@@ -93,6 +101,7 @@ fn parse(input: &str) -> Result<(Vec<u32>, Vec<Board>), Box<dyn Error>> {
     let board_numbers: Vec<&str> = lines.drain(2..lines.len()).collect();
 
     let mut board = Board {
+        done: false,
         numbers: vec![],
         width: 5,
         height: 5,
@@ -102,6 +111,7 @@ fn parse(input: &str) -> Result<(Vec<u32>, Vec<Board>), Box<dyn Error>> {
         if line.is_empty() {
             boards.push(board);
             board = Board {
+                done: false,
                 numbers: vec![],
                 width: 5,
                 height: 5,
@@ -124,19 +134,36 @@ fn parse(input: &str) -> Result<(Vec<u32>, Vec<Board>), Box<dyn Error>> {
 pub fn day041(input: &str) -> Result<usize, Box<dyn Error>> {
     let (numbers, boards) = parse(input)?;
 
-    let mut bingo = Bingo { boards };
+    let mut game = Game { boards };
 
     for number in numbers {
-        bingo.new_number(number);
-        if let Some(board) = bingo.winner() {
-            return Ok(board.result(number));
+        game.new_number(number);
+        let boards = game.bingo();
+        if boards.len() == 1 {
+            return Ok(boards[0].result(number));
         }
     }
 
     Ok(0)
 }
 
-pub fn day042(_input: &str) -> Result<usize, Box<dyn Error>> {
+pub fn day042(input: &str) -> Result<usize, Box<dyn Error>> {
+    let (numbers, boards) = parse(input)?;
+    let len = boards.len();
+    let mut game = Game { boards };
+    let mut winners = 0;
+
+    for number in numbers {
+        game.new_number(number);
+        let boards = game.bingo();
+        if !boards.is_empty() {
+            winners += boards.len();
+            if winners == len {
+                return Ok(boards[0].result(number));
+            }
+        }
+    }
+
     Ok(0)
 }
 
@@ -176,6 +203,31 @@ mod tests {
 
     #[test]
     fn day042_test() {
-        assert_eq!(day042("").unwrap(), 0);
+        assert_eq!(
+            day042(
+                "7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
+
+22 13 17 11  0
+ 8  2 23  4 24
+21  9 14 16  7
+ 6 10  3 18  5
+ 1 12 20 15 19
+
+ 3 15  0  2 22
+ 9 18 13 17  5
+19  8  7 25 23
+20 11 10 24  4
+14 21 16 12  6
+
+14 21 17 24  4
+10 16 15  9 19
+18  8 23 26 20
+22 11 13  6  5
+ 2  0 12  3  7
+"
+            )
+            .unwrap(),
+            1924
+        );
     }
 }
