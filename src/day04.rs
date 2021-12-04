@@ -61,6 +61,17 @@ impl Board {
     }
 }
 
+impl Default for Board {
+    fn default() -> Self {
+        Self {
+            done: Default::default(),
+            numbers: Default::default(),
+            width: 5,
+            height: 5,
+        }
+    }
+}
+
 #[derive(Debug)]
 struct Game {
     boards: Vec<Board>,
@@ -100,22 +111,12 @@ fn parse(input: &str) -> Result<(Vec<u32>, Vec<Board>), Box<dyn Error>> {
     let mut boards: Vec<Board> = vec![];
     let board_numbers: Vec<&str> = lines.drain(2..lines.len()).collect();
 
-    let mut board = Board {
-        done: false,
-        numbers: vec![],
-        width: 5,
-        height: 5,
-    };
+    let mut board = Default::default();
 
     for line in board_numbers {
         if line.is_empty() {
             boards.push(board);
-            board = Board {
-                done: false,
-                numbers: vec![],
-                width: 5,
-                height: 5,
-            };
+            board = Default::default();
         } else {
             let ns: Vec<u32> = line
                 .split(' ')
@@ -126,6 +127,7 @@ fn parse(input: &str) -> Result<(Vec<u32>, Vec<Board>), Box<dyn Error>> {
             board.numbers.append(&mut a);
         }
     }
+
     boards.push(board);
 
     Ok((numbers, boards))
@@ -159,7 +161,7 @@ pub fn day042(input: &str) -> Result<usize, Box<dyn Error>> {
         if !boards.is_empty() {
             winners += boards.len();
             if winners == len {
-                return Ok(boards[0].result(number));
+                return Ok(boards.last().unwrap().result(number));
             }
         }
     }
