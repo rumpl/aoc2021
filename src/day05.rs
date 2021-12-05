@@ -1,4 +1,4 @@
-use std::{collections::HashMap, error::Error, ops::Range};
+use std::{collections::HashMap, error::Error};
 
 #[derive(Debug)]
 struct Pos {
@@ -25,37 +25,37 @@ impl Cloud {
 
     fn positions(&self) -> Vec<Pos> {
         if self.start.x == self.end.x {
-            return self
-                .rows()
-                .into_iter()
-                .map(|y| Pos { x: self.start.x, y })
-                .collect();
+            return self.rows().map(|y| Pos { x: self.start.x, y }).collect();
         }
+
         if self.start.y == self.end.y {
-            return self
-                .columns()
-                .into_iter()
-                .map(|x| Pos { x, y: self.start.y })
-                .collect();
+            return self.columns().map(|x| Pos { x, y: self.start.y }).collect();
         }
-        let cols: Box<dyn Iterator<Item = u32>> = if self.start.x > self.end.x {
-            Box::new(self.columns().rev())
+
+        let mut c;
+        let mut cc;
+        let cols: &mut dyn Iterator<Item = u32> = if self.start.x <= self.end.x {
+            c = self.columns();
+            &mut c
         } else {
-            Box::new(self.columns())
-        };
-        let rows: Box<dyn Iterator<Item = u32>> = if self.start.y > self.end.y {
-            Box::new(self.rows().rev())
-        } else {
-            Box::new(self.rows())
+            cc = self.columns().rev();
+            &mut cc
         };
 
-        cols.zip(rows)
-            .into_iter()
-            .map(|(x, y)| Pos { x, y })
-            .collect()
+        let mut r;
+        let mut rr;
+        let rows: &mut dyn Iterator<Item = u32> = if self.start.y <= self.end.y {
+            r = self.rows();
+            &mut r
+        } else {
+            rr = self.rows().rev();
+            &mut rr
+        };
+
+        cols.zip(rows).map(|(x, y)| Pos { x, y }).collect()
     }
 
-    fn columns(&self) -> Range<u32> {
+    fn columns(&self) -> impl DoubleEndedIterator<Item = u32> + '_ {
         if self.start.x < self.end.x {
             self.start.x..self.end.x + 1
         } else {
@@ -63,7 +63,7 @@ impl Cloud {
         }
     }
 
-    fn rows(&self) -> Range<u32> {
+    fn rows(&self) -> impl DoubleEndedIterator<Item = u32> + '_ {
         if self.start.y < self.end.y {
             self.start.y..self.end.y + 1
         } else {
@@ -73,37 +73,32 @@ impl Cloud {
 }
 
 fn parse_points(start: &str, end: &str) -> Cloud {
-    let a = start.split(',').collect::<Vec<&str>>();
-    let b = end.split(',').collect::<Vec<&str>>();
+    let mut a = start.split(',');
+    let mut b = end.split(',');
 
     Cloud {
         start: Pos {
-            x: a[0].parse().unwrap(),
-            y: a[1].parse().unwrap(),
+            x: a.next().unwrap().parse().unwrap(),
+            y: a.next().unwrap().parse().unwrap(),
         },
         end: Pos {
-            x: b[0].parse().unwrap(),
-            y: b[1].parse().unwrap(),
+            x: b.next().unwrap().parse().unwrap(),
+            y: b.next().unwrap().parse().unwrap(),
         },
     }
 }
 
-fn parse(input: &str) -> Vec<Cloud> {
+fn parse(input: &str) -> impl Iterator<Item = Cloud> + '_ {
     input
         .lines()
-        .map(|line| line.split(" -> ").collect::<Vec<&str>>())
-        .map(|points| parse_points(points[0], points[1]))
-        .collect()
+        .map(|line| line.split(" -> "))
+        .map(|mut points| parse_points(points.next().unwrap(), points.next().unwrap()))
 }
 
-pub fn day051(input: &str) -> Result<usize, Box<dyn Error>> {
-    let clouds = parse(input);
-
-    let hor_ver: Vec<Cloud> = clouds
-        .into_iter()
-        .filter(|cloud| cloud.is_hor_ver())
-        .collect();
-
+fn histo<T>(hor_ver: T) -> Result<usize, Box<dyn Error>>
+where
+    T: Iterator<Item = Cloud>,
+{
     let mut ccs = HashMap::new();
     for c in hor_ver {
         for p in c.positions() {
@@ -115,24 +110,15 @@ pub fn day051(input: &str) -> Result<usize, Box<dyn Error>> {
         }
     }
 
-    Ok(ccs.values().into_iter().filter(|&v| *v > 1).count())
+    Ok(ccs.values().filter(|&v| *v > 1).count())
+}
+
+pub fn day051(input: &str) -> Result<usize, Box<dyn Error>> {
+    histo(parse(input).filter(|cloud| cloud.is_hor_ver()))
 }
 
 pub fn day052(input: &str) -> Result<usize, Box<dyn Error>> {
-    let clouds = parse(input);
-
-    let mut ccs = HashMap::new();
-    for c in clouds {
-        for p in c.positions() {
-            let key = p.key();
-            match &ccs.get(&key) {
-                Some(&v) => &ccs.insert(key, v + 1),
-                None => &ccs.insert(key, 1),
-            };
-        }
-    }
-
-    Ok(ccs.values().into_iter().filter(|&v| *v > 1).count())
+    histo(parse(input))
 }
 
 #[cfg(test)]
