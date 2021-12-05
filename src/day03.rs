@@ -80,11 +80,7 @@ pub fn day032(input: &str) -> Result<usize, Box<dyn Error>> {
 mod tests {
     use super::*;
 
-    #[test]
-    fn day031_test() {
-        assert_eq!(
-            day031(
-                "00100
+    static INPUT: &str = "00100
 11110
 10110
 10111
@@ -95,32 +91,15 @@ mod tests {
 10000
 11001
 00010
-01010"
-            )
-            .unwrap(),
-            198
-        );
+01010";
+
+    #[test]
+    fn day031_test() {
+        assert_eq!(day031(INPUT).unwrap(), 198);
     }
 
     #[test]
     fn day032_test() {
-        assert_eq!(
-            day032(
-                "00100
-11110
-10110
-10111
-10101
-01111
-00111
-11100
-10000
-11001
-00010
-01010"
-            )
-            .unwrap(),
-            230
-        );
+        assert_eq!(day032(INPUT).unwrap(), 230);
     }
 }

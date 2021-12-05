@@ -139,11 +139,7 @@ pub fn day052(input: &str) -> Result<usize, Box<dyn Error>> {
 mod tests {
     use super::*;
 
-    #[test]
-    fn day051_test() {
-        assert_eq!(
-            day051(
-                "0,9 -> 5,9
+    static INPUT: &str = "0,9 -> 5,9
 8,0 -> 0,8
 9,4 -> 3,4
 2,2 -> 2,1
@@ -152,30 +148,15 @@ mod tests {
 0,9 -> 2,9
 3,4 -> 1,4
 0,0 -> 8,8
-5,5 -> 8,2"
-            )
-            .unwrap(),
-            5
-        );
+5,5 -> 8,2";
+
+    #[test]
+    fn day051_test() {
+        assert_eq!(day051(INPUT).unwrap(), 5);
     }
 
     #[test]
     fn day052_test() {
-        assert_eq!(
-            day052(
-                "0,9 -> 5,9
-8,0 -> 0,8
-9,4 -> 3,4
-2,2 -> 2,1
-7,0 -> 7,4
-6,4 -> 2,0
-0,9 -> 2,9
-3,4 -> 1,4
-0,0 -> 8,8
-5,5 -> 8,2"
-            )
-            .unwrap(),
-            12
-        );
+        assert_eq!(day052(INPUT).unwrap(), 12);
     }
 }

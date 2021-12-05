@@ -83,35 +83,20 @@ pub fn day022(input: &str) -> Result<usize, Box<dyn Error>> {
 mod tests {
     use super::*;
 
-    #[test]
-    fn day021_test() {
-        assert_eq!(
-            day021(
-                "forward 5
+    static INPUT: &str = "forward 5
 down 5
 forward 8
 up 3
 down 8
-forward 2"
-            )
-            .unwrap(),
-            150
-        );
+forward 2";
+
+    #[test]
+    fn day021_test() {
+        assert_eq!(day021(INPUT).unwrap(), 150);
     }
 
     #[test]
     fn day022_test() {
-        assert_eq!(
-            day022(
-                "forward 5
-down 5
-forward 8
-up 3
-down 8
-forward 2"
-            )
-            .unwrap(),
-            900
-        );
+        assert_eq!(day022(INPUT).unwrap(), 900);
     }
 }
