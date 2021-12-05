@@ -7,18 +7,14 @@ enum Command {
 }
 
 #[derive(Debug, Clone)]
-struct CommandParseError {
-    message: String,
-}
+struct CommandParseError {}
 
 impl FromStr for Command {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let parts: Vec<&str> = s.split(' ').collect();
 
         if parts.len() != 2 {
-            return Err(CommandParseError {
-                message: "not enough parts".into(),
-            });
+            return Err(CommandParseError {});
         }
 
         match parts[1].parse::<usize>() {
@@ -26,13 +22,9 @@ impl FromStr for Command {
                 "forward" => Ok(Command::Forward(amount)),
                 "up" => Ok(Command::Up(amount)),
                 "down" => Ok(Command::Down(amount)),
-                _ => Err(CommandParseError {
-                    message: "unknown command".into(),
-                }),
+                _ => Err(CommandParseError {}),
             },
-            Err(_) => Err(CommandParseError {
-                message: "unable to parse the amount".into(),
-            }),
+            Err(_) => Err(CommandParseError {}),
         }
     }
 
