@@ -5,6 +5,7 @@ mod day02;
 mod day03;
 mod day04;
 mod day05;
+mod day06;
 
 macro_rules! day {
     ($day:ident, $part:ident) => {
@@ -31,6 +32,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     day!(day05, day051);
     day!(day05, day052);
+
+    day!(day06, day061);
+    day!(day06, day062);
 
     Ok(())
 }

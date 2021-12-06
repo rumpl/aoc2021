@@ -101,13 +101,10 @@ where
 {
     let mut ccs = HashMap::new();
     for c in hor_ver {
-        for p in c.positions() {
-            let key = p.key();
-            match &ccs.get(&key) {
-                Some(&v) => &ccs.insert(key, v + 1),
-                None => &ccs.insert(key, 1),
-            };
-        }
+        ccs = c.positions().iter().fold(ccs, |mut acc, p| {
+            *acc.entry(p.key()).or_insert(0) += 1;
+            acc
+        });
     }
 
     Ok(ccs.values().filter(|&v| *v > 1).count())
