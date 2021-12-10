@@ -83,7 +83,7 @@ pub fn day102(input: &str) -> Result<i64, Box<dyn Error>> {
             }
         }
 
-        if braces.len() > 0 {
+        if !braces.is_empty() {
             let mut score = 0;
             for b in braces.into_iter().rev() {
                 score *= 5;
@@ -92,7 +92,7 @@ pub fn day102(input: &str) -> Result<i64, Box<dyn Error>> {
             results.push(score);
         }
     }
-    results.sort();
+    results.sort_unstable();
     Ok(results[results.len() / 2])
 }
 

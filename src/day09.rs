@@ -1,4 +1,4 @@
-use std::{cmp::Ordering, collections::HashSet, error::Error, usize};
+use std::{collections::HashSet, error::Error, usize};
 
 fn parse(input: &str) -> Vec<Vec<i32>> {
     input
@@ -11,7 +11,7 @@ fn parse(input: &str) -> Vec<Vec<i32>> {
         .collect()
 }
 
-fn get(input: &Vec<Vec<i32>>, i: i32, j: i32) -> i32 {
+fn get(input: &[Vec<i32>], i: i32, j: i32) -> i32 {
     *input
         .get(i as usize)
         .unwrap_or(&vec![])
@@ -44,7 +44,7 @@ pub fn day091(input: &str) -> Result<i32, Box<dyn Error>> {
     Ok(res)
 }
 
-fn basin_size(numbers: &Vec<Vec<i32>>, i: i32, j: i32) -> HashSet<String> {
+fn basin_size(numbers: &[Vec<i32>], i: i32, j: i32) -> HashSet<String> {
     let mut set = HashSet::new();
 
     set.insert(format!("{}-{}", i, j));
@@ -110,17 +110,9 @@ pub fn day092(input: &str) -> Result<usize, Box<dyn Error>> {
         }
     }
 
-    basins.sort_by(|a, b| {
-        if a > b {
-            Ordering::Less
-        } else if a < b {
-            Ordering::Greater
-        } else {
-            Ordering::Equal
-        }
-    });
+    basins.sort_unstable();
 
-    Ok(basins[0] * basins[1] * basins[2])
+    Ok(basins[basins.len() - 1] * basins[basins.len() - 2] * basins[basins.len() - 3])
 }
 
 #[cfg(test)]

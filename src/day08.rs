@@ -1,15 +1,11 @@
 use std::{collections::HashMap, error::Error};
 
 fn parse(input: &str) -> Vec<Vec<usize>> {
-    let lines: Vec<&str> = input.lines().collect();
+    let lines = input.lines();
 
-    let numbers: Vec<&str> = lines
-        .into_iter()
-        .map(|line| line.split('|').collect::<Vec<&str>>()[1])
-        .collect();
+    let numbers = lines.map(|line| line.split('|').collect::<Vec<&str>>()[1]);
 
     numbers
-        .into_iter()
         .map(|n| {
             n.trim()
                 .split(' ')
@@ -27,17 +23,16 @@ fn parse_sorted(input: &str) -> Vec<String> {
         .split(' ')
         .map(|s| {
             let mut chars: Vec<char> = s.chars().collect();
-            chars.sort();
+            chars.sort_unstable();
             chars.iter().collect()
         })
         .collect()
 }
 
 fn parse2(input: &str) -> Vec<(Vec<String>, Vec<String>)> {
-    let lines: Vec<&str> = input.lines().collect();
+    let lines = input.lines();
 
     lines
-        .into_iter()
         .map(|line| {
             let parts: Vec<&str> = line.split('|').collect();
             (parse_sorted(parts[0]), parse_sorted(parts[1]))
@@ -59,7 +54,7 @@ pub fn day081(input: &str) -> Result<usize, Box<dyn Error>> {
     Ok(n)
 }
 
-fn calc(first: &Vec<String>, second: &Vec<String>) -> usize {
+fn calc(first: &[String], second: &[String]) -> usize {
     let mut known = HashMap::new();
     let mut one = "";
     let mut four = "";
@@ -111,7 +106,7 @@ fn calc(first: &Vec<String>, second: &Vec<String>) -> usize {
 
     let mut res = 0;
     for n in second {
-        res = res * 10;
+        res *= 10;
         res += known.get(n).unwrap();
     }
 
